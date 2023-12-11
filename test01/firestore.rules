@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{datosUsuarios}/{document=**}{
+      allow read: if true;
+      allow create: if request.resource.data.idemp is string &&
+                     request.resource.data.usuario is string &&
+                     request.resource.data.email is string &&
+                    request.resource.data.fechaCreacion is string && // Asegura que fechaCreacion sea una cadena
+                     request.resource.data.ultimoAcceso is string &&  // Asegura que ultimoAcceso sea una cadena
+                     request.resource.data.fechaCreacion.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z$') && // Verifica el formato ISO 8601
+                     request.resource.data.ultimoAcceso.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z$'); // Verifica el formato ISO 8601
+      allow update: if true;
+      allow delete: if false;
+    }
+    
+    match /{datosZodiaco}/{document=**}{
+      allow read: if true;
+      allow create: if request.resource.data.posic is int &&
+                     request.resource.data.signo is string &&
+                     request.resource.data.rango is string &&
+                     request.resource.data.elemento is string &&
+                     request.resource.data.astro is string &&
+                     request.resource.data.piedra is string &&
+                     request.resource.data.url is string;
+      allow update: if false;
+      allow delete: if false;
+    }	
+    
+  }
+}
